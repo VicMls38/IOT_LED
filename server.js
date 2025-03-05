@@ -16,14 +16,17 @@ app.get('/', (req, res) => {
 
 // Routes pour chaque couleur
 app.get('/vert', (req, res) => {
+    console.log(`LED Vert allumée`);
     io.emit('updateLED', 'vert');
     res.send("LED Verte allumée !");
 });
 app.get('/jaune', (req, res) => {
+    console.log(`LED Jaune allumée`);
     io.emit('updateLED', 'jaune');
     res.send("LED Jaune allumée !");
 });
 app.get('/rouge', (req, res) => {
+    console.log(`LED Rouge allumée`);
     io.emit('updateLED', 'rouge');
     res.send("LED Rouge allumée !");
 });
