@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrôle LED ESP32</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 0; padding: 20px;
+        }
+        h1 { color: #333; }
+        #ledStatus {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            display: inline-block;
+            color: white;
+            background-color: gray;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-vert { background-color: green; color: white; }
+        .btn-jaune { background-color: yellow; color: black; }
+        .btn-rouge { background-color: red; color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>Contrôle de la LED</h1>
+    
+    <button class="btn-vert" onclick="changeColor('vert')">Vert</button>
+    <button class="btn-jaune" onclick="changeColor('jaune')">Jaune</button>
+    <button class="btn-rouge" onclick="changeColor('rouge')">Rouge</button>
+
+    <p>État actuel : <span id="ledStatus">Aucune</span></p>
+
+    <script>
+        const socket = io();
+
+        function changeColor(color) {
+            fetch(`/${color}`)  // Appelle l'endpoint Express
+                .then(response => response.text())
+                .then(data => console.log(data));
+        }
+
+        socket.on('updateLED', (state) => {
+            const ledStatus = document.getElementById('ledStatus');
+            let colorText = "";
+
+            switch (state) {
+                case 'vert':
+                    colorText = "Verte";
+                    ledStatus.style.backgroundColor = "green";
+                    break;
+                case 'jaune':
+                    colorText = "Jaune";
+                    ledStatus.style.backgroundColor = "yellow";
+                    ledStatus.style.color = "black"; // Texte lisible sur fond jaune
+                    break;
+                case 'rouge':
+                    colorText = "Rouge";
+                    ledStatus.style.backgroundColor = "red";
+                    break;
+                default:
+                    colorText = "Aucune";
+                    ledStatus.style.backgroundColor = "gray";
+            }
+
+            ledStatus.textContent = `LED ${colorText}`;
+        });
+    </script>
+
+</body>
+</html>
